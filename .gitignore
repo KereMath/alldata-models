@@ -1,0 +1,14 @@
+# Extracted features & processed data (large binary files)
+processed_data/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
