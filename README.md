@@ -152,8 +152,6 @@ Toplam veri seti: **~13,493 seri** → 39 kaynak kategori
 | `Stochastic Trend + Point Anomaly`                                       | stochastic_trend | point_anomaly      |
 | `Stochastic Trend + Variance Shift/Stochastic Trend + Variance Shift`    | stochastic_trend | variance_shift     |
 
-> **Not:** `Stochastic Trend + Variance Shift` klasörü başlangıçta yalnızca ZIP dosyaları içeriyordu.
-> `unzip_all.py` ile 105 ZIP açılarak ~105,000 CSV elde edildi. ZIP'ler sonradan silindi (2.1 GB kazanıldı).
 
 #### Volatility + Anomali (4 kombinasyon)
 
@@ -413,8 +411,6 @@ no_match     = sum(~base_correct & ~anomaly_correct) # her ikisi yanlış
 | stationary           |  345  |  473   | 72.9%  |
 | volatility           |  233  |  350   | 66.6%  |
 
-**Gözlem:** `deterministic_trend` seriler ayrışmış ve zengin özelliklidir;
-`volatility` ise hem base hem anomaly head'de zorlanmaktadır.
 
 ---
 
@@ -430,8 +426,6 @@ no_match     = sum(~base_correct & ~anomaly_correct) # her ikisi yanlış
 | collective_anomaly |  452  |   527  |  85.8% |
 | none               |  191  |   268  |  71.3% |
 
-**Gözlem:** `contextual_anomaly` tespit açısından en kolay sınıf;
-`none` (anomali yok) ise diğer anomali türleriyle karıştırılmaktadır.
 
 ---
 
@@ -449,17 +443,6 @@ stochastic_trend    53/70=76%   57/69=83%   N/A         44/66=67%   57/67=85%   
 volatility          42/71=59%   18/54=33%   N/A         62/71=87%   51/79=65%   N/A         60/75=80%
 ```
 
-**Zayıf noktalar:**
-- `volatility + collective_anomaly` → **33%** (en düşük)
-- `stationary + point_anomaly` → **57%**
-- `volatility + none` → **59%** (volatility baseline tanımada bile zorlanıyor)
-
-**Güçlü noktalar:**
-- `deterministic_trend + collective_anomaly` → **100%**
-- `deterministic_trend + point_anomaly` → **100%**
-- `deterministic_trend + trend_shift` → **100%**
-- `stationary + contextual_anomaly` → **100%**
-- `deterministic_trend + variance_shift` → **97.4%**
 
 ---
 
@@ -508,10 +491,6 @@ Sadece Anomali (base yanlış)   :   46 / 2699  ( 1.70%)
 No Match     (her ikisi yanlış):   34 / 2699  ( 1.26%)
 ```
 
-**Analiz:**
-- Base head'in tek başına yanlış olduğu durum yalnızca %2.96 → base sınıflandırması çok güçlü
-- Hataların büyük çoğunluğu (%10.37) anomaly head'de — base doğru ama anomali yanlış
-- Tamamen çift hata oranı %1.26 — sistem nadiren ikisini birden ıskalıyor
 
 ---
 
@@ -545,14 +524,7 @@ numpy.core._exceptions._ArrayMemoryError
 #### Stochastic Trend + Variance Shift — ZIP Sorunu
 Klasör CSV değil, 105 adet ZIP içeriyordu.
 `get_leaf_dirs()` CSV bulamadığından kategoriyi atlıyordu.
-Çözüm: `unzip_all.py` yazıldı ve çalıştırıldı → 105 ZIP açıldı → ZIP'ler silindi (2.1 GB).
-
-#### Disk Dolu Hatası (unzip sırasında)
-```
-[Errno 28] No space left on device
-```
-ZIP açılırken disk doldu. 16 GB alan boşaltıldıktan sonra `unzip_all.py` yeniden çalıştırıldı
-(idempotent: zaten açılmış CSV'leri atlar).
+Çözüm: `unzip_all.py` yazıldı ve çalıştırıldı.
 
 #### MinimalFCParameters Deney Başarısızlığı
 10 özelliğe geçildiğinde Full Match: **87.78% → 62.12%** düştü.
@@ -566,8 +538,6 @@ EfficientFCParameters'a (777 özellik) geri dönüldü.
 | MinimalFC testi | 1000 | MinimalFC (10 özellik) | ~37K | **62.12%** |
 | Bellek optimizasyonu | 350 | EfficientFC | ~13.5K | **86.66%** |
 
-Sonuç: Daha az ama dengeli veri, çok daha fazla veriden daha kötü sonuç vermedi.
-Özellik kalitesi (EfficientFC) kritik; özellik miktarı (MinimalFC) çok önemli.
 
 ---
 
